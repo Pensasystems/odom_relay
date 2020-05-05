@@ -30,8 +30,8 @@ void odomCallback(const nav_msgs::Odometry::ConstPtr& msg) {
 
   // prepare the message for publishing
   nav_msgs::Odometry odom = *msg;
-  odom.header.frame_id = "vislam_odom";
-  odom.child_frame_id = "odom_frame";
+  // odom.header.frame_id = "vislam_odom";
+  // odom.child_frame_id = "odom_frame";
   odom.twist.twist.linear = convert_to_body_frame(quat, vel);
   odom_pub_.publish(odom);
 }
