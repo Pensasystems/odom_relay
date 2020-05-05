@@ -1,0 +1,12 @@
+
+<launch>
+
+  <node pkg="odom_relay" 
+        type="odom_relay_twist_body" 
+        name="odom_relay_twist_body" 
+        output="screen">
+        <param name="odom_topic" value="/vislam/odometry"/>
+        <param name="output_topic" value="/vislam/odometry_body"/> 
+  </node>
+
+</launch>

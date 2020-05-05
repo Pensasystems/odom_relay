@@ -3,13 +3,9 @@
 #include "ros/ros.h"
 
 #include "nav_msgs/Odometry.h"
-#include "geometry_msgs/Vector3.h"
-#include "geometry_msgs/Quaternion.h"
-#include "sensor_msgs/LaserScan.h"
 #include <tf/tf.h>
 
 ros::Publisher odom_pub;
-ros::Publisher laser_pub;
 
 geometry_msgs::Vector3 set_vector3(const double &x, const double &y, const double &z) {
   geometry_msgs::Vector3 v;
@@ -40,25 +36,16 @@ void odomCallback(const nav_msgs::Odometry::ConstPtr& msg) {
   odom_pub.publish(odom);
 }
 
-void laserCallback(const sensor_msgs::LaserScan::ConstPtr& msg) {
-  sensor_msgs::LaserScan laser;
-  laser = *msg;
-  laser.header.frame_id = "laser_link";
-  laser_pub.publish(laser);
-
-}
-
 int main(int argc, char **argv) {
   ros::init(argc, argv, "odom_relay_tf");
   ros::NodeHandle n;
 
-  ros::Subscriber sub_odom = n.subscribe("/vislam/odometry", 5, odomCallback);
-  odom_pub = n.advertise<nav_msgs::Odometry>("/vislam/odometry_body", 5);
+  std::string odom_topic, output_topic;
+  n.getParam("odom_topic", odom_topic);
+  n.getParam("output_topic", output_topic);
 
-  // Republish laser_scan with different header
-  ros::Subscriber sub_laser = n.subscribe("/laser/scan", 5, laserCallback);
-  laser_pub = n.advertise<sensor_msgs::LaserScan>("/laser/scan_laser_link", 5);
-
+  ros::Subscriber sub_odom = n.subscribe(odom_topic, 5, odomCallback);
+  odom_pub = n.advertise<nav_msgs::Odometry>(output_topic, 5);
   
   ros::spin();
 
